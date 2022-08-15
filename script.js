@@ -4,8 +4,11 @@ const label = document.querySelector("label");
 const resetBtn = document.querySelector("#reset");
 const rainbowBtn = document.querySelector("#rainbow");
 const shadeBtn = document.querySelector("#shade");
-let color = "#000"
+const defaultBtn = document.querySelector("#default");
+const colorChanger = document.querySelector(`input[type="color"]`)
+let color = "rgb(0,0,0)";
 let size = 4;
+let mode = "default"
 
 function createGrid(val) {
     board.style.gridTemplateColumns = `repeat(${val}, 1fr)`
@@ -14,9 +17,29 @@ function createGrid(val) {
     for (let i = 1; i <= val * val; i++) {
         const div = document.createElement("div");
         div.classList.add("sqr");
+        div.style.backgroundColor = "rgb(255, 255, 255)";
         board.appendChild(div);
         colorDiv(div);
     }
+}
+
+rainbowBtn.onclick = () => {
+    mode = "rainbow";
+    defaultBtn.style.opacity = "1";
+    shadeBtn.style.opacity = "1";
+    rainbowBtn.style.opacity = "0.5"
+}
+shadeBtn.onclick = () => {
+    mode = "shade";
+    defaultBtn.style.opacity = "1";
+    shadeBtn.style.opacity = "0.5";
+    rainbowBtn.style.opacity = "1"
+}
+defaultBtn.onclick = () => {
+    mode = "default";
+    defaultBtn.style.opacity = "0.5";
+    shadeBtn.style.opacity = "1";
+    rainbowBtn.style.opacity = "1"
 }
 
 function clearGrid() {
@@ -28,33 +51,59 @@ function restartGrid() {
     board.style.gridTemplateRows = `repeat(16, 1fr)`
     rainbowBtn.checked = false;
     shadeBtn.checked = false;
-    color = "#000"
+    color = "rgb(0,0,0)"
 
     for (let i = 1; i <= 16 * 16; i++) {
         const div = document.createElement("div");
         div.classList.add("sqr");
+        div.style.backgroundColor = "rgb(255, 255, 255)";
         board.appendChild(div);
         colorDiv(div);
     }
 }
 
-function getColor() {
-    color = `hsl(${Math.floor(Math.random()*360)}, 75%, 50%)`
+function shadeTheColor(div) {
+    let rgb = div.style.backgroundColor;
+    rgb = rgb.substring(4, rgb.length-1)
+         .replace(/ /g, '')
+         .split(',');
+    let r = rgb[0];
+    let g = rgb[1];
+    let b = rgb[2];
+
+    if(r > 0){
+        r-=25;
+    }
+
+    if(g > 0){
+        g-=25;
+    }
+
+    if(b > 0){
+        b-=25;
+    }
+    div.style.backgroundColor = `rgb(${r},${g},${b})`;
 }
 
+function getColor() {
+    color = `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)})`
+}
 
-
-
+//sorry for that name lol
+function getColor2() {
+    color = colorChanger.value;
+}
 
 function colorDiv(div) {
     div.addEventListener("mouseover", (e) => {
-        if(rainbowBtn.checked) {
+        if(mode === "rainbow") {
             getColor();
             e.target.style.backgroundColor = `${color}`;
-        } else if(shadeBtn.checked) {
-            e.target.style.backgroundColor = `${color}`;
+        } else if(mode === "shade") {
+            shadeTheColor(e.target);
         } else {
-            e.target.style.backgroundColor = `#000`
+            getColor2()
+            e.target.style.backgroundColor = `${color}`
         }
     })
 }
