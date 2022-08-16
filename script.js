@@ -129,6 +129,35 @@ resetBtn.addEventListener("click", () => {
 
 window.onload = e => {
     restartGrid()
+    createBg()
+    fadeIn()
+    setTimeout(fadeOut(), 1000);
 }
 
 
+
+//bg animation 
+const bgDiv = document.querySelector(".bg"); 
+function createBg() {
+    for(let i = 0; i <= 60; i++) {
+        let div = document.createElement("div")
+        div.classList.add("bgStyle");
+        bgDiv.appendChild(div);
+    }
+}
+
+function fadeIn() {
+    setInterval(() => {
+        let selected = Math.floor(Math.random()*61);
+        const selectedSqr = document.querySelector(`.bg .bgStyle:nth-child(${selected})`)
+        selectedSqr.style.opacity = "0.05";
+    }, 100);
+}
+
+function fadeOut() {
+    setInterval(() => {
+        let selected = Math.floor(Math.random()*61);
+        const selectedSqr = document.querySelector(`.bg .bgStyle:nth-child(${selected})`)
+        selectedSqr.style.opacity = "0";
+    }, 100);
+}
